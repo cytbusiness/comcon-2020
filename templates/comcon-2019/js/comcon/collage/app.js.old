@@ -1,0 +1,294 @@
+let collage = (function()
+{
+  // Handles the calculations of the module
+  let model = (function()
+  {
+
+  })();
+
+  // Handles the visual alterations carried out by the module
+  let view = (function()
+  {
+    let strings =
+    {
+      base: [],
+      collage: [],
+      fullscreen: []
+    };
+
+    let objects =
+    {
+      images: []
+    };
+
+    let getImages = function()
+    {
+      return objects.images;
+    };
+
+    let addControls = function()
+    {
+      if (objects.images.length > 1)
+      {
+        $("." + strings.collage.collageProduct).append(`<div class="${strings.collage.controls}">
+          <button class="${strings.collage.btn} ${strings.collage.btnLeft}"></button>
+          <p class="${strings.collage.pages} ${strings.base.line} ${strings.base.lineMin}"><span class="${strings.collage.page}">1</span> of <span class="${strings.collage.pageNum}">${objects.images.length}</span></p>
+          <button class="${strings.collage.btn} ${strings.collage.btnRight}"></button>
+        </div>`);
+      }
+    };
+
+    let controlsPage = function(dir)
+    {
+      // Track what page we're on
+      var i = 0;
+
+      switch (dir)
+      {
+        case "next":
+        // Have we reached the end of the pages?
+          if (i > (objects.images.length - 1))
+          {
+            i = 0;
+            objects.images.forEach(function(current)
+            {
+              if (current != objects.images[0])
+              {
+                // Set all of the current images to invisible
+                current.forEach((image) =>
+                {
+                  $(image).parent("." + strings.collage.item).toggleClass(strings.collage.visible);
+                });
+              }
+            });
+            // Set first page images to visible again
+            objects.images[0].forEach((image) =>
+            {
+              $(image).parent("." + strings.collage.item).toggleClass(strings.collage.visible);
+            });
+
+            // Set current page text
+            $("." + strings.collage.page).text(i + 1);
+            console.log(i);
+          }
+          // If we've not reached the end, move onto the next page
+          else
+          {
+            objects.images.forEach(function(current)
+            {
+              if (current != objects.images[i + 1])
+              {
+                current.forEach((image) =>
+                {
+                  $(image).parent("." + strings.collage.item).toggleClass(strings.collage.visible);
+                });
+              }
+            });
+
+            // Set the next page of images to visible
+            objects.images[i + 1].forEach((image) =>
+            {
+              $(image).parent("." + strings.collage.item).toggleClass(strings.collage.visible);
+            });
+
+            i++;
+
+            // Set current page text
+            $("." + strings.collage.page).text(i + 1);
+            console.log(i);
+          }
+          break;
+
+        case "prev":
+          // Have we reached the beginning of the pages?
+          if (i < 0)
+          {
+            // Reset the index to the last page, so we can cycle back through
+            i = objects.images.length - 1;
+
+            objects.images.forEach(function(current)
+            {
+              if (current != objects.images[objects.images.length - 1])
+              {
+                current.forEach((image) =>
+                {
+                  $(image).parent("." + strings.collage.item).toggleClass(strings.collage.visible);
+                });
+              }
+            });
+
+            // Set the final page to visible - we've cycled back through to it
+            objects.images[objects.images.length - 1].forEach((image) =>
+            {
+              $(image).parent("." + strings.collage.item).toggleClass(strings.collage.visible);
+            });
+          }
+          // We haven't reached the end, keep going back through the pages
+          else
+          {
+            objects.images.forEach(function(current)
+            {
+              if (current != objects.images[i - 1])
+              {
+                current.forEach((image) =>
+                {
+                  $(image).parent("." + strings.collage.item).toggleClass(strings.collage.visible);
+                });
+              }
+            });
+
+            objects.images[i - 1].forEach((image) =>
+            {
+              $(image).parent("." + strings.collage.item).toggleClass(strings.collage.visible);
+            });
+            i--;
+          }
+          break;
+      }
+    };
+
+    let addFullscreen = function()
+    {
+      // Get data from the image that has been clicked
+      let image =
+      {
+        title: "",
+        desc: "",
+        text: "",
+        src: ""
+      };
+      if (typeof $(this).attr("title") !== "undefined") {  image.title = $(this).attr("title"); };
+      if (typeof $(this).attr("alt") !== "undefined") { image.desc = $(this).attr("alt"); };
+      if (typeof $(this).data("text") !== "undefined") { image.text = $(this).data("text"); };
+      if (typeof $(this).attr("src") !== "undefined") { image.src = $(this).attr("src"); };
+
+      $("body").append(`<div class="${strings.fullscreen.fullscreen}">
+        <a href="#" class="${strings.fullscreen.exit}" title="Close (Esc)"></a>
+        <div class="${strings.fullscreen.container}">
+          <div class="${strings.fullscreen.content}">
+            <div class="${strings.fullscreen.gallery}">
+              <div class="${strings.fullscreen.btn} ${strings.fullscreen.btnLeft}"></div>
+              <img src="${image.src}" alt="${image.title}" class="${strings.fullscreen.image}">
+              <div class="${strings.fullscreen.btn} ${strings.fullscreen.btnRight}"></div>
+            </div>
+            <div class="${strings.fullscreen.text}">
+              <h2 class="${strings.fullscreen.title} ${strings.base.heading}">${image.title}</h2>
+              <p class="${strings.base.line}">${image.desc}</p>
+              <p class="${strings.base.line}">${image.text}</p>
+            </div>
+          </div>
+        </div>
+      </div>`);
+
+      // Add action to close the fullscreen window
+      $("." + strings.fullscreen.exit).on("click", function(el) { el.preventDefault(); });
+      $("." + strings.fullscreen.exit).on("click", removeFullscreen);
+      $(document).keydown(function(e)
+      {
+        if ((e.keyCode || e.which) == 27)
+        {
+          removeFullscreen();
+        }
+      });
+    };
+
+    let removeFullscreen = function()
+    {
+      $("." + strings.fullscreen.fullscreen).remove();
+    };
+
+    let addEvents = function()
+    {
+      // Remove default link action - i.e. don't open the link to the page, do our actions instead
+      $("." + strings.collage.item).on("click", function(el) { el.preventDefault(); });
+
+      // Add event to each of the images - when clicked, open the fullscreen window
+      objects.images.forEach((chunk) =>
+      {
+        chunk.forEach((image) =>
+        {
+          $(image).on("click", addFullscreen);
+        });
+      });
+
+      // Add events to the control buttons
+      // Next
+      $("." + strings.collage.btnRight).on("click", function()
+      {
+        controlsPage("next");
+      });
+      // Previous
+      $("." + strings.collage.btnLeft).on("click", function()
+      {
+        controlsPage("prev");
+      });
+    };
+
+    // Find images in the collage
+    let setImages = function()
+    {
+      // Group images together by what page they appear on e.g. the first 3 images will be in one array
+      // $("." + strings.collage.items).each(function() { objects.images.push($(this).find("." + strings.collage.image)); });
+      var i = 0;
+      $("." + strings.collage.items).each(function()
+      {
+        var imgArray = [];
+
+        // Put all found images into an array, so we can separate them
+        $(this).find("." + strings.collage.image).each(function()
+        {
+          imgArray.push(this);
+        });
+
+        // Split the array into 3s - 3 images per collage page
+        var i, j, temp, chunk = 3;
+        for (i = 0, j = imgArray.length; i < j; i+= chunk)
+        {
+          temp = imgArray.slice(i, i + chunk);
+          objects.images.push(temp);
+        }
+      });
+      console.log(objects.images);
+    };
+
+    let setStrings = function(args)
+    {
+      strings.base = args[0];
+      strings.collage = args[1];
+      strings.fullscreen = args[2];
+    };
+
+    return {
+      init: function(args)
+      {
+        setStrings(args);
+        setImages();
+        getImages();
+
+        addControls();
+        addEvents();
+      }
+    }
+  })();
+
+  // Handles the model and view modules
+  let controller = (function(m, v)
+  {
+    return {
+      init: function(args)
+      {
+        v.init(args[0]);
+      }
+    }
+  })(model, view);
+
+  return {
+    // Initialise the module
+    init: function(args)
+    {
+      controller.init(args);
+    }
+  }
+})();
+
+export {collage};

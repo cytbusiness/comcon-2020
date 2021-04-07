@@ -1,0 +1,563 @@
+<?php
+  /**
+   * @package     Commercial Connections 2019
+   * @subpackage  com_content
+   *
+   * @copyright   Copyright (C) 2019 Commercial Connections Ltd. All rights reserved.
+   */
+
+   defined('_JEXEC') or die;
+
+   JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+   $doc = JFactory::getDocument();
+   $dir = JUri::base() . 'templates/comcon-2019/';
+
+   // Paramter variables
+   $params    = $this->item->params;
+   $images    = json_decode($this->item->images);
+   $urls      = json_decode($this->item->urls);
+   $canEdit   = $params->get('access-edit');
+   $user      = JFactory::getUser();
+   $info      = $params->get('info_block_position', 0);
+   $attribs   = json_decode($this->item->attribs);
+
+   // Get directory to template
+   $dir = JUri::base() . 'templates/comcon-2019/';
+
+   // Get images for the gallery
+   $gallery = json_decode($images->gallery_images);
+
+   // Add the gallery app
+   $applink = "<script type=\"module\" src=\"" . $dir . "js/comcon/init.js\"></script>";
+   $doc->addCustomTag($applink);
+
+?>
+
+<article class="main main--product">
+  <h1 class="text__title"><?php echo $this->item->title; ?></h1>
+  <p class="text__line"><?php echo $attribs->alternative_readmore; ?></p>
+  <section class="product">
+    <section class="product__top">
+      <div class="collage collage--product">
+        <div class="collage__items">
+          <?php
+
+            // Only make the first 3 items visible
+            $count = 0;
+            foreach ($gallery->gallery_image as $key => $val)
+            {
+              if ($count < 3)
+              {
+                // Output the images to the gallery
+                //echo $key . "<br>" . $val . "<br>" . $gallery->gallery_image_alt[$key] . "<br>" . $gallery->gallery_image_description[$key] . "<br><br>";
+                $url = $val;
+                $alt = $gallery->gallery_image_alt[$key];
+                $title = $gallery->gallery_image_title[$key];
+                $desc = $gallery->gallery_image_description[$key];
+
+                echo "<a href=\"$url\" class=\"collage__item collage__item--visible link\"><img src=\"$val\" alt=\"$alt\" title=\"$title\" data-text=\"$desc\" class=\"collage__image\"></a>";
+                $count++;
+              }
+              else
+              {
+                $url = $val;
+                $alt = $gallery->gallery_image_alt[$key];
+                $title = $gallery->gallery_image_title[$key];
+                $desc = $gallery->gallery_image_description[$key];
+
+                echo "<a href=\"$url\" class=\"collage__item collage__item link\"><img src=\"$val\" alt=\"$alt\" title=\"$title\" data-text=\"$desc\" class=\"collage__image\"></a>";
+                $count++;
+              }
+            }
+
+          ?>
+        </div>
+      </div>
+
+      <div class="product__topright">
+        <div class="product__contact">
+          <h2 class="text__heading">Interested in this product?</h2>
+          <div class="contact-phone">
+            <a href="#" class="contact-phone__link link-fill">
+              <img src="<?php echo $dir; ?>images/assets/icons/phone.png" alt="Phone" class="contact-phone__image">
+              <p class="contact-phone__text text__cta">Call us: 028 4483 1227</p>
+            </a>
+          </div>
+          <div class="contact-email">
+            <a href="#" class="contact-email__link link-fill">
+              <img src="<?php echo $dir; ?>images/assets/icons/email.svg" alt="Email" class="contact-phone__image">
+              <p class="contact-phone__text text__cta">info@commercialconnections.co.uk</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="product__downloads">
+          <h4 class="text__subsubheading">Downloads</h4>
+
+          <div class="product__dlitem">
+            <a href="#brochures" class="product__dlbtn btn btn--cta">Product Brochures</a>
+            <p class="product__dlnum text__line text__line--nogap">3 items</p>
+          </div>
+
+          <div class="product__dlitem">
+            <a href="#specs" class="product__dlbtn btn btn--cta">Technical Specifications</a>
+            <p class="product__dlnum text__line text__line--nogap">3 items</p>
+          </div>
+
+          <div class="product__dlitem">
+            <a href="#installs" class="product__dlbtn btn btn--cta">Installation Guides</a>
+            <p class="product__dlnum text__line text__line--nogap">1 items</p>
+          </div>
+
+          <div class="product__dlitem">
+            <a href="#cad" class="product__dlbtn btn btn--cta">CAD Models</a>
+            <p class="product__dlnum text__line text__line--nogap">1 items</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="product__main">
+      <section class="product__content">
+        <?php echo $this->item->text; ?>
+        <?php
+
+          $db = JFactory::getDbo();
+
+          // Store the results so we can compare them to rank results
+          $resultsArray = [];
+
+          // Get articles with the same tag
+          foreach ($this->item->tags->itemTags as $tag)
+          {
+            $query = $db->getQuery(true);
+            $query
+              ->select($db->quoteName('a.id'))
+              ->select($db->quoteName('a.title'))
+              ->select($db->quoteName('a.attribs'))
+              ->select($db->quoteName('a.images'))
+              ->select($db->quoteName('b.tag_id'))
+              ->from($db->quoteName('#__content', 'a'))
+              ->join('INNER', $db->quoteName('#__contentitem_tag_map', 'b') . ' ON ' . $db->quoteName('a.id') . ' = ' . $db->quoteName('b.content_item_id'))
+              ->where($db->quoteName('b.tag_id') . ' = ' . $tag->tag_id)
+              ->where($db->quoteName('a.id') . ' != ' . $this->item->id)
+              ->where($db->quoteName('a.catid') . ' = ' .  $this->item->catid)
+              // Limit to 10 relevant articles
+              ->setLimit(10)
+              ->order('uuid()');
+
+            // $query->select($db->quoteName(array('content_item_id')));
+            // $query->from($db->quoteName('flrob_contentitem_tag_map'));
+            // $query->where($db->quoteName('tag_id') . ' = ' . $tag->tag_id);
+
+            $db->setQuery($query);
+
+            $results = $db->loadObjectList();
+
+            // Push the results into the array for comparison
+            $resultsArray[$tag->tag_id] = $results;
+          }
+
+          // Adding results to an array so we can see if there's any duplicates.
+          // if there are duplicates, we give them more weight to appear higher
+          // in the order
+          $idArray = [];
+
+          foreach ($resultsArray as $result)
+          {
+            if (!(empty($result)))
+            {
+              foreach ($result as $item)
+              {
+                $newArray = array("id" => $item->id, "count" => 1);
+                array_push($idArray, $newArray);
+              }
+            }
+          }
+
+          // Count duplicates
+          for ($i = 0; $i < count($idArray); ++$i)
+          {
+            // Loop through the array again
+            for ($j = 0; $j < count($idArray); ++$j)
+            {
+              // Ignore the current item
+              if ($j != $i)
+              {
+                // Found a match?
+                if ($idArray[$j]["id"] == $idArray[$i]["id"])
+                {
+                  $idArray[$i]["count"]++;
+                }
+              }
+            }
+          }
+
+          // Remove duplicates
+          foreach ($idArray as $key => $item)
+          {
+            // Loop through again
+            foreach ($idArray as $jkey => $jtem)
+            {
+              // Ignore the current item
+              if ($jkey == $key)
+              {
+                break;
+              }
+              else
+              {
+                if ($jtem["id"] == $item["id"])
+                {
+                  unset($idArray[$jkey]);
+                }
+              }
+            }
+          }
+
+          // Sort array based on which article has the highest count
+          function sortByOrder($a, $b)
+          {
+            return $b["count"] - $a["count"];
+          }
+          usort($idArray, 'sortByOrder');
+
+          print_r($idArray);
+          echo "<br><br>";
+
+          // Print out the articles now that we've sorted them
+          // foreach ($resultsArray as $key => $val)
+          // {
+          //   echo $key;
+          //   echo "<br>";
+          //   print_r($val);
+          //   echo "<br><br>";
+          // }
+
+          foreach ($resultsArray as $key => $set)
+          {
+            // Loop through each result set
+            foreach ($set as $ikey => $item)
+            {
+              foreach ($idArray as $idkey => $iditem)
+              {
+                // Does the article match?
+                if ($item->id == $iditem["id"])
+                {
+                  $attr   = json_decode($item->attribs);
+                  $img    = json_decode($item->images);
+
+                  echo $item->title;
+                  echo "<br>";
+                  echo $img->image_intro;
+                  echo "<br>";
+                  echo $attr->alternative_readmore;
+                  echo "<br><br>";
+                  // We've got the article, don't need to search for it again
+                  unset($idArray[$idkey]);
+                }
+              }
+            }
+          }
+
+
+        ?>
+        <!--
+        <p class="text__line">Acoustic performance is an important part of any archtitectural or interior design project. We supply Decoustics Quadrillo, allowing you to implement an aesthetic design tailored to your specification from a variety of options whilst delivering great noise reduction.</p>
+
+        <div class="content-video">
+          <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/acPc1H4FNqA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <h3 class="text__subheading">Acoustical Data</h3>
+        <p class="text__line">Noise Reduction Coefficient (NRC) up to 1.00.</p>
+        <p class="text__line">Sound Absorption Average (SAA) up to 1.03.</p>
+
+        <div class="table-container">
+          <table class="table">
+            <tbody class="table__body">
+              <tr class="table__row">
+                <th class="table__cell">Type</th>
+                <th class="table__cell">Thickness</th>
+                <th class="table__cell" colspan="6">Frequency (Hz)</th>
+                <th class="table__cell">NRC</th>
+                <th class="table__cell">SAA</th>
+              </tr>
+
+              <tr class="table__row">
+                <th class="table__cell"><b>Quadrillo</b></th>
+                <th class="table__cell"><b>Type F5 Mounting</b></th>
+                <th class="table__cell">125</th>
+                <th class="table__cell">250</th>
+                <th class="table__cell">500</th>
+                <th class="table__cell">1000</th>
+                <th class="table__cell">2000</th>
+                <th class="table__cell">4000</th>
+                <th class="table__cell"></th>
+                <th class="table__cell"></th>
+              </tr>
+
+              <tr class="table__row">
+                <th class="table__cell">QPP-19</th>
+                <th class="table__cell">
+                  <ul class="table__items">
+                    <li class="table__item">Panel (28mm)</li>
+                    <li class="table__item">Core (19mm)</li>
+                  </ul>
+                </th>
+                <td class="table__cell">0.05</td>
+                <td class="table__cell">0.16</td>
+                <td class="table__cell">0.59</td>
+                <td class="table__cell">1.01</td>
+                <td class="table__cell">0.94</td>
+                <td class="table__cell">0.69</td>
+                <td class="table__cell">0.70</td>
+                <td class="table__cell">0.69</td>
+              </tr>
+
+              <tr class="table__row">
+                <th class="table__cell">QPP-25</th>
+                <th class="table__cell">
+                  <ul class="table__items">
+                    <li class="table__item">Panel (35mm)</li>
+                    <li class="table__item">Core (25mm)</li>
+                  </ul>
+                </th>
+                <td class="table__cell">0.07</td>
+                <td class="table__cell">0.28</td>
+                <td class="table__cell">0.85</td>
+                <td class="table__cell">1.09</td>
+                <td class="table__cell">0.95</td>
+                <td class="table__cell">0.74</td>
+                <td class="table__cell">0.80</td>
+                <td class="table__cell">0.79</td>
+              </tr>
+
+              <tr class="table__row">
+                <th class="table__cell">QPP-50</th>
+                <th class="table__cell">
+                  <ul class="table__items">
+                    <li class="table__item">Panel (60mm)</li>
+                    <li class="table__item">Core (50mm)</li>
+                  </ul>
+                </th>
+                <td class="table__cell">0.29</td>
+                <td class="table__cell">0.82</td>
+                <td class="table__cell">1.18</td>
+                <td class="table__cell">1.06</td>
+                <td class="table__cell">1.00</td>
+                <td class="table__cell">0.73</td>
+                <td class="table__cell">1.00</td>
+                <td class="table__cell">1.03</td>
+              </tr>
+
+              <tr class="table__row">
+                <th class="table__cell"><b>Quadrillo</b></th>
+                <th class="table__cell"><b>Type E400 Mounting</b></th>
+                <th class="table__cell">125</th>
+                <th class="table__cell">250</th>
+                <th class="table__cell">500</th>
+                <th class="table__cell">1000</th>
+                <th class="table__cell">2000</th>
+                <th class="table__cell">4000</th>
+                <th class="table__cell"></th>
+                <th class="table__cell"></th>
+              </tr>
+
+              <tr class="table__row">
+                <th class="table__cell">QPP-19</th>
+                <th class="table__cell">
+                  <ul class="table__items">
+                    <li class="table__item">Panel (28mm)</li>
+                    <li class="table__item">Core (19mm)</li>
+                  </ul>
+                </th>
+                <td class="table__cell">0.78</td>
+                <td class="table__cell">0.77</td>
+                <td class="table__cell">0.61</td>
+                <td class="table__cell">0.86</td>
+                <td class="table__cell">1.04</td>
+                <td class="table__cell">0.70</td>
+                <td class="table__cell">0.80</td>
+                <td class="table__cell">0.82</td>
+              </tr>
+
+              <tr class="table__row">
+                <th class="table__cell">QPP-25</th>
+                <th class="table__cell">
+                  <ul class="table__items">
+                    <li class="table__item">Panel (35mm)</li>
+                    <li class="table__item">Core (25mm)</li>
+                  </ul>
+                </th>
+                <td class="table__cell">0.79</td>
+                <td class="table__cell">0.90</td>
+                <td class="table__cell">0.81</td>
+                <td class="table__cell">0.95</td>
+                <td class="table__cell">1.05</td>
+                <td class="table__cell">1.05</td>
+                <td class="table__cell">0.90</td>
+                <td class="table__cell">0.91</td>
+              </tr>
+
+              <tr class="table__row">
+                <th class="table__cell">QPP-50</th>
+                <th class="table__cell">
+                  <ul class="table__items">
+                    <li class="table__item">Panel (60mm)</li>
+                    <li class="table__item">Core (50mm)</li>
+                  </ul>
+                </th>
+                <td class="table__cell">0.80</td>
+                <td class="table__cell">0.87</td>
+                <td class="table__cell">1.00</td>
+                <td class="table__cell">1.07</td>
+                <td class="table__cell">1.08</td>
+                <td class="table__cell">1.00</td>
+                <td class="table__cell">1.00</td>
+                <td class="table__cell">0.98</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        -->
+      </section>
+
+      <aside class="aside aside--product">
+        <section class="aside__section aside__section--featured">
+          <h4 class="text__subsubheading">Featured Projects</h4>
+          <div class="aside-module">
+            <img src="images/products/queens_university_belfast_library_decoustics_quadrillo_acoustic_panels_1.jpg" alt="Decoustics Quadrillo wood acoustic panels to reduce noise in university library." class="aside-module__image">
+            <div class="aside-module__text">
+              <h5 class="text__xsheading"><a href="#" class="link-text">Library in Queen's University, Belfast</a></h5>
+              <p class="text__line text__line--small">We supplied Decoustics Quadrillo for the library in in Queen's University, providing a modern wood acoustic finish that reduces noise in an important study area.</p>
+              <p class="text__line text__line--small text__line--nogap"><a href="#" class="link-text">Category: Our Portfolio</a></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="aside__section aside__section--featured">
+          <h4 class="text__subsubheading">Related Products</h4>
+          <div class="aside-module">
+            <img src="images/products/horizon_pharma_topakustik_ceiling_3.jpg" alt="Topakustik Panels, wooden acoustic panels for walls and ceilings." class="aside-module__image">
+            <div class="aside-module__text">
+              <h5 class="text__xsheading"><a href="#" class="link-text">Topakustik Sound Absorbing Panels</a></h5>
+              <p class="text__line text__line--small">Topakustik sound absorbing panels are visually stunning acoustic wood panels for walls and ceilings.</p>
+              <p class="text__line text__line--small text__line--nogap"><a href="#" class="link-text">Category: Room Acoustics</a></p>
+            </div>
+          </div>
+
+          <div class="aside-module">
+            <img src="images/products/google_velasco_vogl_4.jpg" alt="Vogl Perforated perforated ceiling panels, delivering soundproofing to ceilings with an aesthetic design." class="aside-module__image">
+            <div class="aside-module__text">
+              <h5 class="text__xsheading"><a href="#" class="link-text">Vogl Perforated Ceiling Panels</a></h5>
+              <p class="text__line text__line--small">Vogl perforated ceiling panels are ideal when reducing noise in a room by implementing an acoustic design ceiling.</p>
+              <p class="text__line text__line--small text__line--nogap"><a href="#" class="link-text">Category: Room Acoustics</a></p>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </section>
+
+  <h3 class="downloads__title text__heading">Downloads</h3>
+  <div id="brochures" class="downloads">
+    <h4 class="downloads__title text__subheading">Product Brochures</h4>
+    <ul class="downloads__items">
+      <li class="downloads__item">
+        <a href="#" class="downloads__link link-fill">
+          <div class="downloads__icon">
+            <img src="images/assets/icons/pdf.png" alt="PDF Download" class="downloads__ico">
+          </div>
+          <p class="downloads__linktext text__cta">Decoustics Quadrillo Brochure</p>
+        </a>
+        <p class="downloads__filesize text__cta">320KB</p>
+      </li>
+
+      <li class="downloads__item">
+        <a href="#" class="downloads__link link-fill">
+          <div class="downloads__icon">
+            <img src="images/assets/icons/pdf.png" alt="PDF Download" class="downloads__ico">
+          </div>
+          <p class="downloads__linktext text__cta">Finishes Brochure</p>
+        </a>
+        <p class="downloads__filesize text__cta">320KB</p>
+      </li>
+
+      <li class="downloads__item">
+        <a href="#" class="downloads__link link-fill">
+          <div class="downloads__icon">
+            <img src="images/assets/icons/pdf.png" alt="PDF Download" class="downloads__ico">
+          </div>
+          <p class="downloads__linktext text__cta">Designs Brochure</p>
+        </a>
+        <p class="downloads__filesize text__cta">320KB</p>
+      </li>
+    </ul>
+  </div>
+
+  <div id="specs" class="downloads">
+    <h4 class="downloads__title text__subheading">Technical Specifications</h4>
+    <ul class="downloads__items">
+      <li class="downloads__item">
+        <a href="#" class="downloads__link link-fill">
+          <div class="downloads__icon">
+            <img src="images/assets/icons/pdf.png" alt="PDF Download" class="downloads__ico">
+          </div>
+          <p class="downloads__linktext text__cta">Decoustics Quadrillo qpp-19 Specification</p>
+        </a>
+        <p class="downloads__filesize text__cta">320KB</p>
+      </li>
+
+      <li class="downloads__item">
+        <a href="#" class="downloads__link link-fill">
+          <div class="downloads__icon">
+            <img src="images/assets/icons/pdf.png" alt="PDF Download" class="downloads__ico">
+          </div>
+          <p class="downloads__linktext text__cta">Decoustics Quadrillo qpp-25 Specification</p>
+        </a>
+        <p class="downloads__filesize text__cta">320KB</p>
+      </li>
+
+      <li class="downloads__item">
+        <a href="#" class="downloads__link link-fill">
+          <div class="downloads__icon">
+            <img src="images/assets/icons/pdf.png" alt="PDF Download" class="downloads__ico">
+          </div>
+          <p class="downloads__linktext text__cta">Decoustics Quadrillo qpp-50 Specification</p>
+        </a>
+        <p class="downloads__filesize text__cta">320KB</p>
+      </li>
+    </ul>
+  </div>
+
+  <div id="installs" class="downloads">
+    <h4 class="downloads__title text__subheading">Installation Guides</h4>
+    <ul class="downloads__items">
+      <li class="downloads__item">
+        <a href="#" class="downloads__link link-fill">
+          <div class="downloads__icon">
+            <img src="images/assets/icons/pdf.png" alt="PDF Download" class="downloads__ico">
+          </div>
+          <p class="downloads__linktext text__cta">Decoustics Quadrillo Installation Guide</p>
+        </a>
+        <p class="downloads__filesize text__cta">320KB</p>
+      </li>
+    </ul>
+  </div>
+
+  <div id="cad" class="downloads">
+    <h4 class="downloads__title text__subheading">CAD Models</h4>
+    <ul class="downloads__items">
+      <li class="downloads__item">
+        <a href="#" class="downloads__link link-fill">
+          <div class="downloads__icon">
+            <img src="images/assets/icons/cad.png" alt="PDF Download" class="downloads__ico">
+          </div>
+          <p class="downloads__linktext text__cta">Decoustics Quadrillo Installation Guide</p>
+        </a>
+        <p class="downloads__filesize text__cta">320KB</p>
+      </li>
+    </ul>
+  </div>
+</article>

@@ -1,0 +1,239 @@
+<?php
+  /**
+   * @package     Commercial Connections 2019
+   * @subpackage  com_content
+   *
+   * @copyright   Copyright (C) 2019 Commercial Connections Ltd. All rights reserved.
+   */
+
+   defined('_JEXEC') or die;
+
+   JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+   $doc = JFactory::getDocument();
+   $dir = JUri::base() . 'templates/comcon-2019/';
+   // Get the DB object so we can operate with it later
+   $db = JFactory::getDbo();
+
+   // Custom functions
+   require_once(JUri::base(true) . 'templates/comcon-2019/includes/functions/article.php');
+   require_once(JUri::base(true) . 'templates/comcon-2019/includes/functions/functions.php');
+
+   // Paramter variables
+   $params    = $this->item->params;
+   $images    = json_decode($this->item->images);
+   $urls      = json_decode($this->item->urls);
+   $canEdit   = $params->get('access-edit');
+   $user      = JFactory::getUser();
+   $info      = $params->get('info_block_position', 0);
+   $attribs   = json_decode($this->item->attribs);
+   $meta      = json_decode($this->item->metadata);
+
+   // Get directory to template
+   $dir = JUri::base() . 'templates/comcon-2019/';
+
+   // Preset ids
+   $idProducts = 11;
+
+   // Functions for this page
+   function sortByTitle($a, $b)
+   {
+     return $a["object"]->title > $b["object"]->title;
+   }
+
+   function getCategoriesDeepestLevel($categories)
+   {
+     // Keep track of the deepest level
+     $deepest = 0;
+
+     for ($i = 0; $i < count($categories); ++$i)
+     {
+       $categories[$i]["level"] > $deepest ? $deepest = $categories[$i]["level"] : false;
+     }
+
+     return $deepest;
+   }
+
+   // recursive print to go through each level and print out each item - either child category or article item
+   // function recursivePrint($item)
+   // {
+   //   echo "<li class=\"text__item\">\n";
+   //   echo isset($item["object"]->title) ? $item["object"]->title : "";
+   //   if (isset($item["articles"]))
+   //   {
+   //     echo "<ul class=\"text__list\">\n";
+   //     foreach ($item["articles"] as $article)
+   //     {
+   //       recursivePrint($article);
+   //     }
+   //     echo "</ul>\n";
+   //   }
+   //   if (isset($item["children"]))
+   //   {
+   //     echo "<ul class=\"text__list\">\n";
+   //     foreach ($item["children"] as $child)
+   //     {
+   //       recursivePrint($child);
+   //     }
+   //     echo "</ul>\n";
+   //   }
+   //   echo "</li>\n";
+   // }
+   function recursivePrint($item)
+   {
+     if ($item["printed"] == false)
+     {
+       echo "<li class=\"text__item\">\n";
+       echo isset($item["object"]->title) ? $item["object"]->title : "";
+       if (isset($item["articles"]))
+       {
+         echo "<ul class=\"text__list\">\n";
+         foreach ($item["articles"] as $article)
+         {
+           recursivePrint($article);
+         }
+         echo "</ul>\n";
+       }
+       if (isset($item["children"]))
+       {
+         echo "<ul class=\"text__list\">\n";
+         foreach ($item["children"] as $child)
+         {
+           recursivePrint($child);
+         }
+         echo "</ul>\n";
+       }
+       echo "</li>\n";
+
+       $item["printed"] = true;
+     }
+   }
+
+
+?>
+
+<article class="main main--sitemap">
+  <h1 class="text__title"><?php echo $this->item->title; ?></h1>
+  <p class="text__line"><?php echo $attribs->alternative_readmore; ?></p>
+
+  <?php
+
+    // Get published articles
+    $query = $db->getQuery(true);
+
+    $query
+      ->select($db->quoteName('a.id'))
+      ->select($db->quoteName('a.catid'))
+      ->select($db->quoteName('a.title'))
+      ->from($db->quoteName('#__content', 'a'))
+      ->where($db->quoteName('state') . ' = 1;');
+
+    $db->setQuery($query);
+
+    // Articles
+    $articles = $db->loadObjectList();
+
+    // Get published categories
+    $query = $db->getQuery(true);
+
+    $query
+      ->select($db->quoteName('b.id'))
+      ->select($db->quoteName('b.parent_id'))
+      ->select($db->quoteName('b.title'))
+      ->select($db->quoteName('b.level'))
+      ->from($db->quoteName('#__categories', 'b'))
+      ->where($db->quotename('b.published') . ' = ' . '1;');
+
+    $db->setQuery($query);
+
+    $categories = $db->loadObjectList();
+
+    // Get menus
+    $query = $db->getQuery(true);
+
+    $query
+      ->select($db->quoteName('c.id'))
+      ->select($db->quoteName('c.parent_id'))
+      ->select($db->quoteName('c.title'))
+      ->select($db->quoteName('c.link'))
+      ->from($db->quoteName('#__menu', 'c'));
+
+    $db->setQuery($query);
+
+    $menus = $db->loadObjectList();
+
+    // Put the categories into arrays so we can group the articles with them
+    $groupCategories = array();
+
+    foreach ($categories as $category)
+    {
+      array_push($groupCategories, array(
+                                          "id" => $category->id,
+                                          "level" => $category->level,
+                                          "object" => $category,
+                                          // Put categories in lower levels here
+                                          "children" => array(),
+                                          // Put content articles in here
+                                          "articles" => array(),
+                                          // Track whether the item has been output to the page or not
+                                          "printed" => false
+                                        )
+                );
+    }
+
+    // Group articles with their category
+    foreach ($articles as $article)
+    {
+      // Go through each category and put the article into the right category
+      foreach ($groupCategories as &$category)
+      {
+        if ($category["id"] == $article->catid)
+        {
+          array_push($category["articles"], array(
+                                        "id" => $article->id,
+                                        "object" => $article,
+                                        // Track whether the item has been output to the page or not
+                                        "printed" => false
+                                      )
+                    );
+        }
+      }
+    }
+
+    // Sort the articles alphabetically
+    foreach ($groupCategories as $category)
+    {
+      usort($category["articles"], 'sortByTitle');
+    }
+
+    // Put the categories into parents
+    $sortedCategories = array();
+
+    $deepestLevel = getCategoriesDeepestLevel($groupCategories);
+
+    for ($i = $deepestLevel; $i > 0; --$i)
+    {
+      foreach ($groupCategories as $category)
+      {
+        if ($category["object"]->parent_id > 0)
+        {
+          isset($groupCategories[$category["object"]->parent_id]) ? array_push($groupCategories[$category["object"]->parent_id]["children"], $category) : false;
+        }
+      }
+    }
+
+    // Print out
+    echo "<ul class=\"text__list\">\n";
+    foreach ($groupCategories as $category)
+    {
+      // Only print out if there's things to print
+      if (count($category["articles"]) > 0 || count($category["children"]) > 0)
+      {
+        recursivePrint($category);
+      }
+    }
+    echo "</ul>\n";
+
+  ?>
+
+</article>

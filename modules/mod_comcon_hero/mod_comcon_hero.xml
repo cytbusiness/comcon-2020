@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="0.1.2" client="site" method="upgrade">
+	<name>Commercial Connections Hero</name>
+	<author>Ben Ireland</author>
+	<creationDate>16 January 2020</creationDate>
+	<copyright>Copyright Commercial Connections Ltd 2020. All rights reserved.</copyright>
+	<authorEmail>cyt.business@gmail.com</authorEmail>
+	<version>0.1.0</version>
+	<description>Hero image for the home page</description>
+
+	<files>
+		<filename module="mod_comcon_hero">mod_comcon_hero.php</filename>
+		<folder>tmpl</folder>
+	</files>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="hero_image"
+					type="media"
+					label="Select image"
+					default=""
+					description="Select the image" />
+
+				<field
+					name="hero_title"
+					type="text"
+					label="Title"
+					default=""
+					description="Main title"
+				/>
+
+				<field
+					name="hero_subtext"
+					type="text"
+					label="Subtext"
+					default=""
+					description="Text below the title"
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="0.5.2" client="site" method="upgrade">
+	<name>Commercial Connections Contact</name>
+	<author>Ben Ireland</author>
+	<creationDate>24 February 2020</creationDate>
+	<copyright>Copyright Commercial Connections Ltd 2020. All rights reserved.</copyright>
+	<authorEmail>cyt.business@gmail.com</authorEmail>
+	<version>0.5.2</version>
+	<description>Contact form for the contact page.</description>
+
+	<files>
+		<filename module="mod_comcon_contact">mod_comcon_contact.php</filename>
+		<folder>tmpl</folder>
+		<folder>css</folder>
+		<folder>js</folder>
+		<filename>helper.php</filename>
+		<filename>proxy.php</filename>
+		<filename>install.sql</filename>
+		<filename>uninstall.sql</filename>
+	</files>
+
+	<install>
+		<sql>
+			<file charset="utf8" driver="mysql">install.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file charset="utf8" driver="mysql">uninstall.sql</file>
+		</sql>
+	</uninstall>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="contact_sender" type="text" label="Sender email address"
+						description="The email address that enquiries through the contact form will be sent from."
+				/>
+
+				<field name="contact_sendername" type="text" label="Sender name"
+						description="Name for the enquiry sender."
+				/>
+
+				<field name="contact_receiver" type="text" label="Receiver email address"
+						description="The email address that enquiries are sent to."
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

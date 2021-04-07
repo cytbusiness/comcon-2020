@@ -1,0 +1,676 @@
+body
+{
+  font-family: $fmain;
+  color: $cmain;
+}
+
+// Mixins - so we can have consistency between module and component content //
+@mixin breadcrumbLink
+{
+  font-size: $fsup;
+  color: $cprimary;
+  text-decoration: none;
+
+  &:hover
+  {
+    text-decoration: underline;
+  }
+
+  &--current
+  {
+    font-weight: bold;
+  }
+}
+
+@mixin textTitle
+{
+  margin-bottom: .4rem;
+  font-size: $fslarge;
+  font-weight: $fwdefault;
+}
+
+@mixin textLine
+{
+  margin-bottom: 1rem;
+  font-size: $fsdefault;
+  font-weight: $fwdefault;
+
+  &--nogap
+  {
+    margin: 0;
+  }
+
+  &--small
+  {
+    font-size: $fssmall;
+  }
+}
+
+@mixin textHeading
+{
+  font-size: $fsxbig;
+  margin-bottom: 1rem;
+  font-weight: $fwdefault;
+}
+
+@mixin textSubheading
+{
+  font-size: $fsbig;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+@mixin textSubsubheading
+{
+  margin-bottom: 1rem;
+  font-size: $fsmed;
+  font-weight: 300;
+}
+
+@mixin textXsheading
+{
+  font-size: $fsup;
+  margin-bottom: 1rem;
+}
+
+@mixin textLink
+{
+  color: $cprimary;
+  text-decoration: none;
+
+  &:hover
+  {
+    text-decoration: underline;
+  }
+}
+
+@mixin textList
+{
+  list-style: disc;
+  margin-left: 1.5rem;
+}
+
+///////////////////////
+// Joomla Components //
+///////////////////////
+
+.main
+{
+  & > p
+  {
+    @include textLine;
+  }
+}
+
+.category-top
+{
+  & p
+  {
+    @include textLine;
+  }
+
+  & ul
+  {
+    font-size: $fsdefault;
+    list-style: disc;
+    margin-left: 1rem;
+    padding-left: 1rem;
+  }
+
+  & ul>li
+  {
+    margin-bottom: 1rem;
+  }
+}
+
+.blog__content,
+.dlpage__content,
+.product__content,
+.project__content,
+.soundproofing__content
+{
+  & h2
+  {
+    @include textHeading;
+  }
+
+  & h3
+  {
+    @include textSubheading;
+  }
+
+  &  p
+  {
+    @include textLine;
+  }
+
+  & ul
+  {
+    @include textList;
+  }
+
+  & li
+  {
+    @include textLine;
+  }
+
+  & figcaption
+  {
+    @include textLine;
+    font-style: italic;
+  }
+}
+
+.footer
+{
+  &__text p,
+  &__contact p
+  {
+    @include textLine;
+  }
+
+  &__links a,
+  &__contact a
+  {
+    @include textLink;
+  }
+
+  &__address
+  {
+    & ul li
+    {
+      @include textLine;
+
+      font-style: normal;
+      margin: 0;
+    }
+  }
+}
+
+////////////////////////////
+// Joomla components ends //
+////////////////////////////
+
+.text
+{
+  &__title
+  {
+    @include textTitle;
+  }
+
+  &__heading
+  {
+    @include textHeading;
+  }
+
+  &__subheading
+  {
+    @include textSubheading;
+  }
+
+  &__subsubheading
+  {
+    @include textSubsubheading;
+  }
+
+  &__xsheading
+  {
+    @include textXsheading;
+  }
+
+  &__line
+  {
+    @include textLine;
+  }
+
+  &__cta
+  {
+    font-size: inherit;
+    text-decoration: none;
+    color: $ccta;
+  }
+
+  &__link
+  {
+    color: $cprimary;
+  }
+
+  &__list
+  {
+    @include textList;
+  }
+}
+
+input[type="text"]
+{
+  font-family: $fmain;
+  font-size: $fsdefault;
+}
+
+////////////////
+// Components //
+////////////////
+
+.form-group
+{
+  & label
+  {
+    @include textLine;
+    margin-bottom: 0;
+  }
+
+  & input[type="text"],
+  & input[type="email"],
+  & input[type="tel"]
+  {
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  & select
+  {
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  & textarea
+  {
+    font-size: 1rem;
+    font-family: inherit;
+  }
+}
+
+.nav-box
+{
+  &__link:link &__caption,
+  &__link:visited &__caption,
+  &__child a
+  {
+    color: $cbase;
+    text-decoration: none;
+  }
+
+  &__caption,
+  &__child
+  {
+    font-size: 1rem;
+  }
+}
+
+.header
+{
+  &__text
+  {
+    & h1,
+    & p
+    {
+      color: $cbase;
+    }
+  }
+}
+
+.footer
+{
+  &__item
+  {
+    font-size: 1rem;
+  }
+
+  &__addrline
+  {
+    font-style: normal;
+    margin: 0;
+  }
+}
+
+.table,
+article.main table
+{
+  &__cell,
+  td
+  {
+    font-size: 1rem;
+    font-weight: 100;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  &__items
+  {
+    list-style: none;
+  }
+}
+
+.tag
+{
+  &__date
+  {
+    color: $cbase;
+    font-size: $fssmall;
+  }
+}
+
+// Buttons //
+.btn
+{
+  font-size: 1.1rem;
+
+  &--cta
+  {
+    color: $cbase;
+    text-decoration: none;
+  }
+}
+
+// Category //
+
+.category
+{
+  &__label
+  {
+    color: $cbase;
+    text-decoration: none;
+  }
+
+  &__label a:link,
+  &__label a:visited
+  {
+    color: $cbase;
+  }
+
+  &__item p
+  {
+    @include textLine;
+    margin-bottom: 0;
+  }
+}
+
+// Contact //
+
+.contact-email,
+.contact-phone
+{
+  font-size: 1.1rem;
+}
+
+.contact
+{
+  &__body
+  {
+    & p
+    {
+      @include textLine;
+    }
+
+    & a:link,
+    & a:visited
+    {
+      color: $ccta;
+      text-decoration: none;
+      font-size: $fsdefault;
+
+      &:hover
+      {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Fullscreen
+.downloads
+{
+  &__icontext
+  {
+    font-size: $fsdefault;
+    color: $ccta;
+  }
+
+  &__link:link,
+  &__link:visited,
+  {
+    text-decoration: none;
+  }
+
+  &__filesize,
+  &__linktext
+  {
+    font-size: 1rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+}
+
+// Images //
+.collage
+{
+  &__pages
+  {
+    color: $csecondary;
+  }
+}
+
+.hero
+{
+  & p
+  {
+    @include textLine;
+  }
+
+  & ul
+  {
+    @include textList;
+  }
+
+  & li
+  {
+    @include textLine;
+  }
+}
+
+// Nav //
+.breadcrumbs
+{
+  &__link
+  {
+    @include breadcrumbLink;
+  }
+
+  // Joomla //
+  & .breadcrumb
+  {
+    & li a
+    {
+      @include breadcrumbLink;
+    }
+
+    & li.active
+    {
+      font-size: 1.1rem;
+    }
+
+    & span.divider
+    {
+      padding: 0 1rem;
+      font-size: $fsdefault;
+    }
+
+    & span.divider.icon-location
+    {
+      padding: 0;
+    }
+  }
+}
+
+.link-fill
+{
+  text-decoration: none;
+}
+
+.link-text
+{
+  @include textLink;
+}
+
+.top-bar
+{
+  &__phonetext
+  {
+    color: $cbase;
+    font-size: $fsup;
+    white-space: nowrap;
+  }
+}
+
+.nav-top
+{
+  &__dropdown
+  {
+    font-family: inherit;
+    font-size: $fsdefault;
+    color: $cbase;
+  }
+
+  &__item a, // Joomla class
+  &__link
+  {
+    font-size: $fsdefault;
+    color: $cbase;
+    text-decoration: none;
+  }
+}
+
+//-- Pages --//
+
+// Home //
+.home-hero
+{
+  &__text
+  {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  &__title,
+  &__subtitle
+  {
+    color: $cbase;
+    font-weight: 300;
+  }
+
+  &__title
+  {
+    font-size: $fslarge;
+  }
+
+  &__subtitle
+  {
+    font-size: $fsmed;
+  }
+}
+
+.home-content
+{
+  &__title
+  {
+    color: $csecondary;
+  }
+
+  &__body
+  {
+    p
+    {
+      @include textLine;
+    }
+  }
+}
+
+.main
+{
+  &--catparent
+  {
+    & > ul
+    {
+      @include textList;
+    }
+
+    & > ul li
+    {
+      @include textLine;
+    }
+  }
+}
+
+.main-hero
+{
+  &__title
+  {
+    text-align: center;
+    color: $cbase;
+    white-space: nowrap;
+  }
+
+  &__subtext
+  {
+    color: $cbase;
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+
+  @media only screen and (max-width: 880px)
+  {
+    &__title
+    {
+      white-space: normal;
+    }
+
+    &__subtext
+    {
+      white-space: normal;
+    }
+  }
+}
+
+.dlpage
+{
+  &__select
+  {
+    font-size: $fsdefault;
+    font-weight: 100;
+  }
+}
+
+.dl-result
+{
+  &__title
+  {
+    margin: 0;
+  }
+
+  &__text,
+  &__size
+  {
+    font-size: $fsdefault;
+  }
+
+  &__icontext
+  {
+    font-size: $fsdefault;
+    color: $ccta;
+  }
+}
+
+.project
+{
+
+}
+
+// Pagination //
+
+.pagination
+{
+  &__pages
+  {
+    color: $csecondary;
+  }
+}

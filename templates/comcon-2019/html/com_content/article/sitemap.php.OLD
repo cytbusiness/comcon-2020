@@ -1,0 +1,261 @@
+<?php
+  /**
+   * @package     Commercial Connections 2019
+   * @subpackage  com_content
+   *
+   * @copyright   Copyright (C) 2019 Commercial Connections Ltd. All rights reserved.
+   */
+
+   defined('_JEXEC') or die;
+
+   JHtml::addIncludePath(JPATH_COMPONENT . '/helpers');
+
+   $doc = JFactory::getDocument();
+   $dir = JUri::base() . 'templates/comcon-2019/';
+   // Get the DB object so we can operate with it later
+   $db = JFactory::getDbo();
+
+   // Custom functions
+   require_once(JUri::base(true) . 'templates/comcon-2019/includes/functions/article.php');
+   require_once(JUri::base(true) . 'templates/comcon-2019/includes/functions/functions.php');
+
+   // Paramter variables
+   $params    = $this->item->params;
+   $images    = json_decode($this->item->images);
+   $urls      = json_decode($this->item->urls);
+   $canEdit   = $params->get('access-edit');
+   $user      = JFactory::getUser();
+   $info      = $params->get('info_block_position', 0);
+   $attribs   = json_decode($this->item->attribs);
+   $meta      = json_decode($this->item->metadata);
+
+   // Get directory to template
+   $dir = JUri::base() . 'templates/comcon-2019/';
+
+   // Get images for the gallery
+   $gallery = isset($images->gallery_images) ? json_decode($images->gallery_images) : null;
+
+   // Add the gallery app
+   $applink = "<script type=\"module\">import {stringsBase, stringsCollage, stringsDownloads, stringsFullscreen, stringsProduct, collage, downloads} from \"" . $dir . "js/comcon/init.js\"; collage.init([[stringsBase, stringsCollage, stringsFullscreen], 3, stringsCollage.collageProduct]); downloads.init([[stringsBase, stringsDownloads, stringsFullscreen, stringsProduct]]);</script>";
+   $doc->addCustomTag($applink);
+
+   // Get downloads
+   $downloads = getDownloads($this->item);
+
+  // Setting constituent downloads so we can access them later
+   $brochures       = $downloads->brochures;
+   $brochure_titles = $downloads->brochure_titles;
+   $brochure_types  = $downloads->brochure_types;
+   $specs           = $downloads->specs;
+   $specs_titles    = $downloads->specs_titles;
+   $specs_types     = $downloads->specs_types;
+   $installs        = $downloads->installs;
+   $installs_titles = $downloads->installs_titles;
+   $installs_types  = $downloads->specs_types;
+   $cads            = $downloads->cads;
+   $cads_titles     = $downloads->cads_titles;
+?>
+
+<article class="main main--sitemap">
+  <h1 class="text__title"><?php echo $this->item->title; ?></h1>
+  <p class="text__line"><?php echo $attribs->alternative_readmore; ?></p>
+
+  <?php
+    // Get the deepest menu level
+    function getMenuLevel($menus)
+    {
+      $level = 0;
+
+      foreach($menus as $menu)
+      {
+        $menu->level > $level ? $level = $menu->level : $level;
+      }
+
+      return $level;
+    }
+
+    // Group menus with their parents
+    function groupMenus($menus)
+    {
+      // Store all sorted menus
+      $groupedMenus = [];
+
+      foreach($menus as $menu)
+      {
+        // Menu group not set and level 1 menu
+        if (!isset($groupedMenus[$menu->id]) && ($menu->level == 1))
+        {
+          $groupedMenus[$menu->id] = array($menu);
+        }
+        // Add submenus to group with parent
+        if (isset($groupedMenus[$menu->parent_id]) && ($menu->level != 1))
+        {
+          array_push($groupedMenus[$menu->parent_id], $menu);
+        }
+        // Not found the parent (likely submenu item)?
+        else if (!isset($groupedMenus[$menu->parent_id]) && ($menu->level != 1))
+        {
+          // Loop through the array again to see if we can find the parent
+          foreach($menus as $imenu)
+          {
+            // Skip the same menu
+            if ($menu->id != $imenu->id)
+            {
+              // Search the sortedMenus to see if the parent menu has already been sorted
+              foreach ($groupedMenus as $gkey => $group)
+              {
+                foreach ($group as $gmenu)
+                {
+                  // Add the item to the groupedMenus if the parent is found
+                  if (($gmenu->id == $menu->parent_id) && (!in_array($menu, $group)))
+                  {
+                    array_push($groupedMenus[$gkey], $menu);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return $groupedMenus;
+    }
+
+    // Function to sort the menus by level once they've been sorted together
+    function sortByLevel($a, $b)
+    {
+      return $b["level"] - $a["level"];
+    }
+
+    // Sort the menus by level
+    function sortMenus($groupedMenus)
+    {
+      // Get the deepest level of the menus
+      $level = getMenuLevel($groupedMenus);
+
+      // Array to store the menus sorted by level
+      $levelledMenus = [];
+      // Array to store the menus once they're finally sorted
+      $sortedMenus = [];
+
+      // Go through the menus from deepest to shallowest level
+      for ($i = $level; $i > 0; $i--)
+      {
+        // Create an array to store each level
+        $levelArray = array("level" => $i, "groups" => array());
+
+        foreach ($groupedMenus as $menu)
+        {
+          // Only work with the current level and the correct levelArray
+          if (($menu->level == $i) && ($levelArray["level"] == $i))
+          {
+            // Create a new array to store this level/parent group, if not set
+            if(!isset($levelArray["groups"][$menu->parent_id]))
+            {
+              // Create the array
+              $levelArray["groups"][$menu->parent_id] = array("parent" => $menu->parent_id, "menus" => array());
+              // Store the menu in it
+              array_push($levelArray["groups"][$menu->parent_id]["menus"], $menu);
+            }
+            else
+            {
+              // Array already exists? Just store the menu in it then
+              array_push($levelArray["groups"][$menu->parent_id]["menus"], $menu);
+            }
+          }
+        }
+
+        // Push levelArray into levelledMenus once done
+        array_push($levelledMenus, $levelArray);
+      }
+
+      // Sort the levelledMenus by level
+      usort($levelledMenus, 'sortByLevel');
+
+      // Push the child groups into their parent group
+      foreach ($levelledMenus as $levelGroup)
+      {
+        foreach ($levelGroup["groups"] as $gkey =>$groups)
+        {
+          if ($levelGroup["parent"] == $gkey)
+          {
+            array_push($groups["groups"], $levelGroup);
+          }
+        }
+      }
+
+      return $levelledMenus;
+    }
+
+    // Recursive function to print through each level of the sorted results
+    function printResults($group)
+    {
+
+    }
+
+    // Get all menu items
+    $query = $db->getQuery(true);
+
+    $query
+      ->select($db->quoteName('a.id'))
+      ->select($db->quoteName('a.title'))
+      ->select($db->quoteName('a.parent_id'))
+      ->select($db->quoteName('a.path'))
+      ->select($db->quoteName('a.link'))
+      ->select($db->quoteName('a.level'))
+      ->from($db->quoteName('#__menu', 'a'))
+      ->where($db->quoteName('a.client_id') . ' = ' . '0')
+      ->where($db->quoteName('a.published') . ' = ' . '1 ')
+      ->where($db->quoteName('a.alias') . ' != ' . '\'root\'')
+      ->order($db->quoteName('a.id') . ' ASC;');
+
+    $db->setQuery($query);
+
+    $results = $db->loadObjectList();
+
+    $menuArray = [];
+
+    foreach($results as $result)
+    {
+      array_push($menuArray, $result);
+    }
+
+    $grouped  = groupMenus($menuArray);
+
+    // foreach ($grouped as $group)
+    // {
+    //   foreach ($group as $item)
+    //   {
+    //     print_r($item);
+    //     echo "<br>";
+    //   }
+    //   echo "<br>";
+    //   echo "<br>";
+    // }
+
+    // foreach ($grouped as $group)
+    // {
+    //   print_r(getMenuLevel($group));
+    //   echo "<br>";
+    //   echo "<br>";
+    // }
+
+    foreach ($grouped as $group)
+    {
+      $sorted = sortMenus($group);
+
+      print_r($sorted);
+      echo "<br>";
+      echo "<br>";
+
+      // foreach ($sorted as $level)
+      // {
+      //   print_r($level);
+      //   echo "<br>";
+      //   echo "<br>";
+      // }
+    }
+
+  ?>
+
+</article>

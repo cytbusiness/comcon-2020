@@ -1,0 +1,39 @@
+/////////////
+// Colours //
+/////////////
+$cprimary: #105075;
+$csecondary: #c7a860;
+$cbase: #ffffff;
+$cmain: #343434;
+$caction: #ddc58d;
+//$ccta: #559ac1;
+$ccta: #197db7;
+//$cnav: #1773A8;
+$cnav: #13618f;
+$cfaint: #ebebeb;
+$csuccess: green;
+$cfailure: red;
+
+///////////
+// Fonts //
+///////////
+
+$fmain: 'Open Sans', sans-serif;
+
+// Font weights //
+$fwdefault: 100;
+
+// font sizes //
+$fsdefault: 1rem;
+$fsup: 1.1rem;
+$fssmall: .9rem;
+$fsmed: 1.4rem;
+$fsbig: 1.6rem;
+$fsxbig: 1.8rem;
+$fslarge: 2.5rem;
+
+/////////////
+// Layouts //
+/////////////
+
+$griddefault: minmax(2rem, auto) minmax(min-content, 84rem) minmax(2rem, auto);

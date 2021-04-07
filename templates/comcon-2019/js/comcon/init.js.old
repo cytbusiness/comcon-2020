@@ -1,0 +1,12 @@
+// Strings to manipulate DOM objects
+import {stringsBase, stringsCollage, stringsDownloads, stringsFullscreen, stringsProduct} from "./cfg/DOMStrings.js";
+
+// Collage module
+import {collage} from "./collage/app.js";
+
+// Downloads module
+import {downloads} from "./downloads/app.js";
+
+collage.init([[stringsBase, stringsCollage, stringsFullscreen]]);
+
+downloads.init([[stringsBase, stringsDownloads, stringsFullscreen, stringsProduct]])

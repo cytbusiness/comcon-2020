@@ -1,0 +1,20 @@
+.btn
+{
+  padding: .4rem;
+
+  &--inline
+  {
+    display: inline-block;
+  }
+
+  &--cta
+  {
+    background-color: $cprimary;
+    border: none;
+
+    &:hover
+    {
+      background-color: $ccta;
+    }
+  }
+}

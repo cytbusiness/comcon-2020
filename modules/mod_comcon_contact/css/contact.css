@@ -1,0 +1,14 @@
+.contact-form
+{
+  display: none;
+}
+
+.contact-form--visible
+{
+  display: block;
+}
+
+.contact-form__message
+{
+
+}

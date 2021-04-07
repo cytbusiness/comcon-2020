@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="0.1.2" client="site" method="upgrade">
+	<name>Commercial Connections Footer Partners</name>
+	<author>Ben Ireland</author>
+	<creationDate>07 October 2019</creationDate>
+	<copyright>Copyright Commercial Connections Ltd 2019. All rights reserved.</copyright>
+	<authorEmail>cyt.business@gmail.com</authorEmail>
+	<version>0.1.2</version>
+	<description>Image section for the company's partners</description>
+
+	<files>
+		<filename module="mod_comcon_footer_partners">mod_comcon_footer_partners.php</filename>
+		<folder>tmpl</folder>
+	</files>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+				name="footer_images"
+				type="repeatable"
+				icon="list"
+				label="Images"
+				description="Select the images to display in the footer"
+				>
+					<fieldset hidden="true" name="footer_images_modal" repeat="true">
+
+						<field
+							name="footer_images_image"
+							type="media"
+							label="Select image"
+							default=""
+							description="Select the image" />
+						<field
+							name="footer_images_alt"
+							type="text"
+							label="Alt text"
+							default=""
+							description="Alt text for the image" />
+					</fieldset>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

@@ -1,0 +1,41 @@
+.table-container
+{
+}
+
+.table,
+article.main table
+{
+  margin: 2rem 0;
+  &__body
+  {
+
+  }
+
+  &__row,
+  tr
+  {
+    margin: 1rem 0;
+    white-space: nowrap;
+  }
+
+  &__cell,
+  td
+  {
+    padding: .2rem;
+  }
+}
+
+
+@media only screen and (max-width: 640px)
+{
+  .table-container
+  {
+    width: 100%;
+    overflow-x: scroll;
+  }
+
+  .table
+  {
+    width: 100%;
+  }
+}

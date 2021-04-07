@@ -1,0 +1,46 @@
+.main
+{
+  &--portfolio
+  {
+    grid-column: 2 / span 1;
+  }
+}
+
+.category
+{
+  &--portfolio &__items
+  {
+    display: grid;
+    //grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    //grid-auto-rows: 24rem;
+    grid-gap: 1rem;
+  }
+
+  &--portfolio &__item
+  {
+
+  }
+}
+
+@media only screen and (max-width: 800px)
+{
+  .category
+  {
+    &--portfolio &__items
+    {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media only screen and (max-width: 460px)
+{
+  .category
+  {
+    &--portfolio &__items
+    {
+      //grid-auto-rows: 16rem;
+    }
+  }
+}

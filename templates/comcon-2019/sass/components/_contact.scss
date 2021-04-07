@@ -1,0 +1,69 @@
+.contact-email,
+.contact-phone
+{
+  &__link
+  {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    & > :not(:last-child)
+    {
+      margin-right: 1rem;
+    }
+  }
+
+  &__image
+  {
+    width: 5rem;
+    height: 5rem;
+  }
+}
+
+.contact-email
+{
+
+}
+
+@media only screen and (max-width: 480px)
+{
+  .contact-email,
+  .contact-phone
+  {
+    &__image
+    {
+      width: 3rem;
+      height: 3rem;
+    }
+  }
+}
+
+.contact-phone
+{
+  &--fixed
+  {
+    width: 6rem;
+    height: 6rem;
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 1rem;
+    transform: translateY(-1rem);
+
+    z-index: 2;
+  }
+
+  @media only screen and (max-width: 480px)
+  {
+    &--fixed
+    {
+      display: block;
+
+      & .contact-phone__image
+      {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}

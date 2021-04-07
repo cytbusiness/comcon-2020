@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "https://www.joomla.org/xml/dtd/2.5/template-install.dtd">
+<extension version="0.0.2" type="template" client="site" method="upgrade">
+	<name>Commercial Connections 2019</name>
+	<version>0.5.0</version>
+	<creationDate>2019-08-19</creationDate>
+	<author>Ben Ireland</author>
+	<authorEmail>cyt.business@gmail.com</authorEmail>
+	<copyright>Copyright (C) 2019 Commercial Connections Ltd. All Rights Reserved.</copyright>
+	<description>Template design for Commercial Connections Ltd, by Ben Ireland.</description>
+	<files>
+		<filename>index.php</filename>
+		<filename>templateDetails.xml</filename>
+		<folder>css</folder>
+		<folder>images</folder>
+		<folder>js</folder>
+	</files>
+	<positions>
+		<position>nav-top</position>
+		<position>top-bar-search</position>
+		<position>breadcrumbs</position>
+		<position>hero</position>
+		<position>nav-main</position>
+		<position>main</position>
+		<position>items-left</position>
+		<position>items-right</position>
+		<position>footer</position>
+		<position>footer-partners</position>
+		<position>footer-text</position>
+		<position>footer-links</position>
+		<position>footer-address</position>
+		<position>footer-contact</position>
+		<position>footer-social</position>
+	</positions>
+	<config>
+	</config>
+</extension>

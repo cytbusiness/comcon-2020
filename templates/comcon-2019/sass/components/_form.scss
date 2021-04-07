@@ -1,0 +1,70 @@
+.form-group
+{
+  display: flex;
+  flex-direction: column;
+
+  & label,
+  & input[type="text"],
+  & input[type="email"],
+  & input[type="tel"]
+  {
+    padding: .5rem .2rem;
+  }
+
+  & input
+  {
+    border: 2px solid $cfaint;
+  }
+
+  & input[type="submit"], & input[type="button"]
+  {
+    border: none;
+  }
+
+  & select
+  {
+    padding: 0.5rem;
+    border: 1px solid $cfaint;
+  }
+
+  & textarea
+  {
+    margin-bottom: 1rem;
+    padding: .5rem .2rem;
+    border: 1px solid $cfaint;
+    resize: none;
+    overflow-y: scroll;
+  }
+
+  // Google reCAPTCHA robot test
+  .g-recaptcha
+  {
+    margin-bottom: 1rem;
+  }
+
+  &:last-child
+  {
+    margin-bottom: 1rem;
+  }
+}
+
+.required
+{
+  position: relative;
+
+  &::after
+  {
+    content: '*';
+    color: red;
+  }
+}
+
+.success
+{
+  border: 1px solid $csuccess !important;
+}
+
+.failure
+{
+  border: 1px solid $cfailure !important;
+}

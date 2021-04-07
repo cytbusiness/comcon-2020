@@ -1,0 +1,40 @@
+.container
+{
+
+}
+
+.main
+{
+  &--category
+  {
+    grid-column: 2 / span 1;
+  }
+
+  &--catparent
+  {
+    //display: grid;
+    grid-column: 2 / span 1;
+
+    //grid-template-rows: $griddefault;
+  }
+
+  &--catparent &__container
+  {
+    grid-column: 2 / span 1;
+  }
+}
+
+.category
+{
+  &__item
+  {
+    position: relative;
+  }
+
+  &__item .tag__date
+  {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+  }
+}

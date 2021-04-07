@@ -1,0 +1,344 @@
+.top-bar
+{
+  display: grid;
+  width: 100%;
+  height: 6rem;
+
+  grid-template-rows: 1fr;
+  grid-template-columns: $griddefault;
+
+  grid-column-gap: 2rem;
+
+  overflow: hidden;
+
+  background-color: $cprimary;
+
+  &__content
+  {
+    display: grid;
+    height: 6rem;
+    grid-column: 2 / span 1;
+    grid-template-columns: 1fr 2fr;
+  }
+
+  &__logos
+  {
+    display: flex;
+    height: 6rem;
+    grid-row: 1 / span 1;
+    grid-column: 1 / span 1;
+
+    align-items: center;
+  }
+
+  &__logo
+  {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: left;
+
+    &--small,
+    &--only
+    {
+      display: none;
+    }
+  }
+
+  &__contact
+  {
+    display: flex;
+    grid-row: 1 / span 1;
+    grid-column: 2 / span 1;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  &__social
+  {
+    margin-left: 1rem;
+  }
+
+  &__smicon
+  {
+    width: 2rem;
+    height: 2rem;
+    margin-right: .2rem;
+  }
+}
+
+.nav-top
+{
+  display: grid;
+
+  grid-template-columns: $griddefault;
+
+  background-color: $cnav;
+
+  overflow: hidden;
+
+  &__container
+  {
+    display: flex;
+    grid-column: 2 / span 1;
+  }
+
+  & .search // Joomla class
+  {
+    display: flex;
+
+    & form
+    {
+      display: flex;
+      align-items: center;
+    }
+
+    & label
+    {
+      display: none;
+    }
+
+    & input[type="search"]
+    {
+      width: 16rem;
+      margin: 0 .5rem;
+      padding: .2rem .2rem;
+      border: none;
+
+      &:focus
+      {
+        outline-color: $ccta;
+      }
+    }
+
+    & .button
+    {
+      width: $fsdefault;
+      height: $fsdefault;
+    }
+  }
+
+  &__dropdown
+  {
+    display: none;
+  }
+
+  &__items
+  {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+
+    grid-row: 1 / span 1;
+    grid-column: 2 / span 1;
+
+    justify-content: flex-start;
+
+    list-style: none;
+
+    &--responsive
+    {
+      display: none;
+    }
+  }
+
+  &__item
+  {
+    display: flex;
+    height: 100%;
+
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__item a, // Joomla class
+  &__link
+  {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: .5rem 1rem;
+
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: background-color .2s;
+
+    &:hover
+    {
+      background-color: $ccta;
+    }
+  }
+}
+
+@media only screen and (max-width: 1280px)
+{
+  .top-bar
+  {
+    &__content
+    {
+      grid-template-columns: 1fr 1.5fr;
+    }
+  }
+
+  .nav-top
+  {
+    &__container
+    {
+      flex-direction: column;
+    }
+
+    .search form
+    {
+      width: 100%;
+      padding: 1rem 0;
+
+      input[type="search"]
+      {
+        width: calc(100% - 1rem);
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1024px)
+{
+  .top-bar
+  {
+    &__content
+    {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+@media only screen and (max-width: 930px)
+{
+  .nav-top
+  {
+    &--dropdown
+    {
+
+    }
+
+    &--dropdownvis
+    {
+      position: fixed;
+      width: 100%;
+      height: calc(100vh - 6rem);
+      top: 6rem;
+      left: 0;
+      z-index: 9999;
+    }
+
+    &--dropdown &__items
+    {
+      display: none;
+      height: auto;
+
+      &--dropdownvis
+      {
+        display: flex;
+        flex-direction: column;
+      }
+
+      &--dropdownvis li
+      {
+        height: auto;
+      }
+    }
+
+    &__dropdown
+    {
+      display: inline-block;
+      width: auto;
+      height: auto;
+      margin: 1rem 0;
+      padding: 1rem;
+      background-color: $ccta;
+      border: none;
+
+      &:active,
+      &:focus
+      {
+        outline: 1px solid $cprimary;
+      }
+    }
+
+    &__item
+    {
+      width: 100%;
+    }
+
+    &__item a
+    {
+      justify-content: flex-start;
+    }
+  }
+}
+
+@media only screen and (max-width: 840px)
+{
+  .top-bar
+  {
+    &__logo
+    {
+      background-position: left;
+
+      &
+      {
+        display: none;
+      }
+
+      &--small
+      {
+        display: block;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 710px)
+{
+  .top-bar
+  {
+    &__logo
+    {
+      &--small
+      {
+        display: none;
+      }
+
+      &--only
+      {
+        display: block;
+      }
+    }
+  }
+
+  .nav-top
+  {
+    &__link
+    {
+      justify-content: flex-start;
+
+      &::before
+      {
+        display: none;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 480px)
+{
+  .top-bar
+  {
+    &__phonetext
+    {
+      display: none;
+    }
+  }
+}

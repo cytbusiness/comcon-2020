@@ -1,0 +1,232 @@
+.main
+{
+  &--downloads
+  {
+    grid-column: 2 / span 1;
+  }
+}
+
+.dlpage
+{
+  &__form
+  {
+    margin-bottom: 4rem;
+  }
+
+  &__filters
+  {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 2rem;
+  }
+
+  &__dropdowns
+  {
+    display: grid;
+    grid-column: span 1;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    grid-column-gap: 2rem;
+  }
+
+  &__select
+  {
+    border: 1px solid #ebebeb;
+    padding: 0.5rem;
+    font-family: inherit;
+
+    &--invisible
+    {
+      display: none;
+    }
+  }
+
+  &__submit
+  {
+    display: flex;
+    grid-column: span 1;
+  }
+
+  &__btnsubmit
+  {
+    padding: .5rem .2rem;
+
+    font-size: $fsdefault;
+    color: $cmain;
+
+    border: none;
+    border-radius: 5%;
+  }
+
+  &__search
+  {
+    width: calc(100% - 1rem);
+    border: 1px solid #ebebeb;
+    padding: .5rem .2rem;
+  }
+
+  &__results
+  {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 2rem;
+    grid-auto-flow: row;
+  }
+
+  &__downloads,
+  &__heading
+  {
+    grid-column: 1 / span 1;
+  }
+
+  &__downloads
+  {
+    &--search
+    {
+      grid-row: 1 / span 4;
+      grid-column: 2 / span 1;
+    }
+  }
+}
+
+.dl-result
+{
+  border: 1px solid $cfaint;
+  margin-bottom: 1rem;
+
+  &__checkbox
+  {
+    display: none;
+  }
+
+  &__label
+  {
+    display: flex;
+    padding: .5rem;
+    cursor: pointer;
+
+    align-items: center;
+    justify-content: center;
+
+    background-color: $cfaint;
+  }
+
+  &__title
+  {
+    flex: 1;
+  }
+
+  &__btn
+  {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+
+    &::before
+    {
+      width: 1rem;
+      height: 1rem;
+      position: absolute;
+      content: '\FE40';
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: $fsdefault;
+    }
+  }
+
+  &__body
+  {
+    height: 0;
+    overflow: hidden;
+  }
+
+  // Display the content when we check the box
+  &__checkbox:checked ~ &__body
+  {
+    height: auto;
+  }
+
+  &__checkbox:checked ~ &__label > &__btn
+  {
+    &::before
+    {
+      content: '\FF0D';
+    }
+  }
+
+  &__intro
+  {
+    display: grid;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    grid-template-columns: 1fr 2fr;
+    grid-column-gap: 1rem;
+  }
+
+  &__image
+  {
+    max-width: 100%;
+  }
+
+  &__introcontent
+  {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__product
+  {
+    margin: 0;
+  }
+
+  &__content
+  {
+    padding: 1rem;
+  }
+
+  &__items
+  {
+    list-style: none;
+  }
+
+  &__item
+  {
+    margin-bottom: 1rem;
+  }
+
+  &__link
+  {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-column-gap: 1rem;
+    align-items: center;
+  }
+
+  &__icon
+  {
+    position: relative;
+    width: 4rem;
+    height: 4rem;
+
+    background-image: url('../images/assets/icons/file.png');
+    background-size: contain;
+    background-position: center;
+  }
+
+  &__icontext
+  {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &__text
+  {
+    display: flex;
+    justify-content: space-between;
+  }
+}

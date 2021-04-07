@@ -1,0 +1,140 @@
+.nav-box
+{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  &--show
+  {
+    overflow: visible;
+  }
+
+  &__link
+  {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  &__image
+  {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+
+    z-index: 0;
+  }
+
+  &__caption
+  {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    padding: 1rem;
+    z-index: 1;
+    background-color: $cprimary;
+
+    &::before
+    {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 2rem;
+      height: 1rem;
+      left: 1.5rem;
+      top: -1rem;
+      background-color: $cprimary;
+      z-index: 2;
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    }
+
+    &,
+    &::before
+    {
+      transition: background-color .2s;
+    }
+
+    &--nodrop
+    {
+      &::before
+      {
+        display: none;
+      }
+    }
+  }
+
+  &__link:hover &__caption, &__link:hover &__caption::before
+  {
+    background-color: $ccta;
+  }
+
+  &__children
+  {
+    display: none;
+    position: absolute;
+    width: 100%;
+    flex-direction: column;
+    bottom: 0;
+    left: 0;
+    transform: translateY(0);
+    list-style: none;
+    transition: max-height .5s, transform .5s;
+
+    z-index: 2;
+
+    &--visible
+    {
+      display: flex;
+      transform: translateY(100%);
+      transition: max-height .5s, transform .5s;
+    }
+  }
+
+  &__child
+  {
+    position: relative;
+    width: 100%;
+    background-color: $cprimary;
+
+    border-top: 1px solid $ccta;
+
+    z-index: -1;
+
+    &::before
+    {
+      content: '';
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background-color: $ccta;
+      transition: width .2s;
+
+      z-index: 0;
+    }
+
+    &:hover::before
+    {
+      width: 100%;
+      transition: width .2s;
+    }
+  }
+
+  &__childlink
+  {
+    position: relative;
+    display: block;
+    padding: 1rem;
+
+    z-index: 1;
+  }
+}

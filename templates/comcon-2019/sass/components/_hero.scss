@@ -1,0 +1,83 @@
+.hero
+{
+  position: relative;
+  width: 100%;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  grid-row: 2 / span 1;
+  grid-column: 2 / span 1;
+  background-color: $cnav;
+
+
+  &__content
+  {
+
+  }
+
+  &__texts
+  {
+    grid-column: 2 / span 1;
+    color: $cbase;
+    z-index: 1;
+  }
+
+  &__title
+  {
+    margin: 1rem 0;
+  }
+}
+
+.main-hero
+{
+  display: grid;
+  height: 36rem;
+  margin-bottom: 2rem;
+
+  grid-column: 1 / span 3;
+  grid-row: 1 / span 1;
+
+  background-position: center;
+  background-size: cover;
+
+  &__content
+  {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: rgba(black, .4);
+  }
+
+  &__text
+  {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+  }
+
+  &__title,
+  &__subtext
+  {
+    display: block;
+  }
+
+  &__title
+  {
+    width: 100%;
+    padding: 1rem;
+    background-color: $cprimary;
+  }
+}
+
+@media only screen and (max-width: 880px)
+{
+  .main-hero
+  {
+    &__text
+    {
+      width: 70%;
+    }
+  }
+}

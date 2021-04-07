@@ -1,0 +1,23 @@
+.container
+{
+  display: grid;
+  margin-bottom: 6rem;
+  grid-template-rows: min-content;
+  grid-template-columns: minmax(8rem, auto) minmax(min-content, 84rem) minmax(8rem, auto);
+  grid-auto-rows: min-content;
+
+  &>img
+  {
+    max-width: 100%;
+  }
+
+  @media only screen and (max-width: 660px)
+  {
+    grid-template-columns: minmax(2rem, auto) minmax(min-content, 84rem) minmax(2rem, auto);
+  }
+
+  @media only screen and (max-width: 434px)
+  {
+    grid-template-columns: minmax(0, 5vw) minmax(min-content, 84rem) minmax(0, 5vw);
+  }
+}

@@ -1,0 +1,62 @@
+.pagination
+{
+  &__controls
+  {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 1rem 0;
+  }
+
+  &__btn
+  {
+    position: relative;
+    padding: 1rem;
+
+    background-color: $caction;
+    border: none;
+
+    cursor: pointer;
+
+    &:focus
+    {
+      outline: none;
+    }
+
+    &:hover
+    {
+      background-color: lighten($caction, 5%);
+    }
+
+    &::before
+    {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      color: $csecondary;
+      font-size: 1.8rem;
+    }
+
+    &--left
+    {
+      &::before
+      {
+        content: '\2039';
+      }
+    }
+
+    &--right
+    {
+      &::before
+      {
+        content: '\203A';
+      }
+    }
+  }
+
+  &__pages
+  {
+    margin: 0 1rem;
+  }
+}
